@@ -1,1 +1,1 @@
-bot: python 2spice_telegram_bot.py
+web: python bot.py $PORT

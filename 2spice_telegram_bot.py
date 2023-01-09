@@ -1,3 +1,5 @@
+import time
+import math
 import telegram.ext
 from moralis import evm_api
 from frozendict import frozendict
@@ -5,6 +7,10 @@ import datetime
 from sqlitedict import SqliteDict
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
+import os
+import requests
+from flask import Flask
+
 
 
 db = SqliteDict('./db.sqlite', autocommit=True)
@@ -122,8 +128,10 @@ def fetch_image():
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--no-sandbox')
-    driver = webdriver.Chrome(executable_path="chromedriver.exe", options=options)
+    driver = webdriver.Chrome(executable_path="chromedriver.exe")
     driver.get('https://2spice.link/chart')
+    element = driver.find_element_by_css_selector('canvas')
+    time.sleep(5)
     driver.get_screenshot_as_file('image.png')
     print('done')
 
@@ -181,9 +189,9 @@ def price(update, context):
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    message_text = f"Token: 2Spice(Spice)\nPrice: ${price_var}\n Total Supply: {total_supply_val}\n " \
-                   f"MarketCap: ${price_var*total_supply_val}\n" \
-                   f"LP holdings: {backing_lp} BUSD (${backing_lp})"
+    message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 2)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
+                   f"MarketCap: ${round((price_var*total_supply_val), 0)}\n" \
+                   f"LP holdings: {round(backing_lp)} BUSD (${round(backing_lp)})"
     update.message.reply_photo(image, caption=message_text, reply_markup=reply_markup)
     # update.message.reply_text(message_text, reply_markup=reply_markup)
 
