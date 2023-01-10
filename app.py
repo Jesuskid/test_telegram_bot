@@ -162,7 +162,7 @@ def set_price_var():
     db['price'] = price_var
     db['last_time'] = datetime.datetime.now()
 
-def price(update, context):
+def price():
     last_time = db['last_time'] + datetime.timedelta(minutes=3)
     last_image_fetch = db['last_time'] + datetime.timedelta(minutes=30)
     price_var = 0
@@ -200,8 +200,8 @@ def price(update, context):
     message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 4)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
                    f"MarketCap: ${round((price_var*total_supply_val), 0)}\n" \
                    f"LP holdings: {round(backing_lp)} BUSD (${round(backing_lp)})"
-    update.message.reply_photo(image, caption=message_text, reply_markup=reply_markup)
-    # update.message.reply_text(message_text, reply_markup=reply_markup)
+
+    return  message_text
 
 
 app = Flask(__name__)
@@ -238,8 +238,11 @@ def respond():
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text
-
-    bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
+    if (text == '/price'):
+        message = price()
+        bot.sendMessage(text=message, chat_id=chat_id)
+    else:
+        bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
 
     return 'ok'
 
