@@ -11,8 +11,6 @@ import os
 import requests
 from flask import Flask
 
-
-
 db = SqliteDict('./db.sqlite', autocommit=True)
 
 # take a snapshot of the chart

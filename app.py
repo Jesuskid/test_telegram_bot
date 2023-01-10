@@ -15,12 +15,13 @@ PORT = int(os.environ.get('PORT', '5000'))
 
 
 
+
+
 db = SqliteDict('./db.sqlite', autocommit=True)
 
 # take a snapshot of the chart
 # splinter: https://splinter.readthedocs.io/en/latest/install/driver_install.html
 
-app = Flask(__name__)
 TOKEN = "5848336987:AAGeAmMwEkS7i4Y_QbSTbSnNNF1rYfRnJWI"
 api_key = "yUPc8FIAEhUe4S9IfGYV0w3XgpxmizxvFDU0bC9zvcnQ0OAUNxMavTh0rhTvLcMH"
 ADDRESS = "0xEcdF61B4d2a4f84bAB59f9756ccF989C38bf99F5"
@@ -201,47 +202,37 @@ def price(update, context):
     # update.message.reply_text(message_text, reply_markup=reply_markup)
 
 
-
-def content(update, context):
-    update.message.reply_text("chart link: https://2spice.link/chart")
-
-
-def contact(update, context):
-    price = 0
-    total_supply = 0
-    update.message.reply_text(f"price: {price}\n total supply {total_supply}\n")
-
-
-def handleMessage(update, context):
-    update.message.reply_text(f"You said {update.message.text}")
+app = Flask(__name__)
+# from teleflask import Teleflask
+# from teleflask.messages import Message
 
 
 
-updater = telegram.ext.Updater(token=TOKEN, use_context=True)
-disp = updater.dispatcher
 
-disp.add_handler(telegram.ext.CommandHandler("start", start))
-disp.add_handler(telegram.ext.CommandHandler("help", help))
-disp.add_handler(telegram.ext.CommandHandler("price", price))
-disp.add_handler(telegram.ext.CommandHandler("contact", contact))
-disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMessage))
 
-updater.start_polling(listen="0.0.0.0",
-                       port=PORT,
-                       url_path=TOKEN)
-updater.bot.setWebhook("https://telegram-bot-2g8d.onrender.com/" + TOKEN)
 
-updater.idle()
+@app.route('/', methods=["GET", 'POST'])
+def index():
+    bot = telegram.Bot(token=TOKEN)
+    # updater = telegram.ext.Updater(token=TOKEN, use_context=True)
+    if request.method == 'POST':
+        update = telegram.Update.de_json(request.get_json(force=True), bot)
+        chat_id = update.effective_chat.id
+        text = update.message.text
+        if(text == 'price'):
+            bot.sendMessage(text=f'You said {text}', chat_id=chat_id)
+        elif(text == 'contact'):
+            pass
+    else:
+        bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
+    return '.'
 
-@app.route('/', methods=['POST', 'GET'])
-def home():
-
-    return 'Hello bot'
-
-@app.route('/sethook', methods=['POST', 'GET'])
-def sethook():
-    updater.start_webhook(f'http://127.0.0.1:5000/{TOKEN}')
+@app.route('/setWebHook/<str:url>')
+def setHook(url):
+    bot = telegram.Bot(token=TOKEN)
+    bot.set_webhook("{URL}{TOKEN}".format(URL=url,TOKEN=TOKEN))
     return 'success'
 
+
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+   app.run(threaded=True)
