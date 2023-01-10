@@ -247,7 +247,9 @@ def respond():
 def setHook(url):
     bot = telegram.Bot(token=TOKEN)
     Url = URL if URL else url
-    s = bot.setWebhook("{URL}{TOKEN}".format(URL=Url,TOKEN=TOKEN))
+    hook = "{URL}{TOKEN}".format(URL=Url,TOKEN=TOKEN)
+    print('HOOK URL -----'+" "+hook)
+    s = bot.setWebhook(hook)
     if s:
         return "webhook setup ok"
     else:
