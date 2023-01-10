@@ -10,6 +10,8 @@ from selenium import webdriver
 import os
 import requests
 from flask import Flask, request
+import os
+PORT = int(os.environ.get('PORT', '5000'))
 
 
 
@@ -218,19 +220,22 @@ def handleMessage(update, context):
 updater = telegram.ext.Updater(token=TOKEN, use_context=True)
 disp = updater.dispatcher
 
-def main():
-    disp.add_handler(telegram.ext.CommandHandler("start", start))
-    disp.add_handler(telegram.ext.CommandHandler("help", help))
-    disp.add_handler(telegram.ext.CommandHandler("price", price))
-    disp.add_handler(telegram.ext.CommandHandler("contact", contact))
-    disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMessage))
+disp.add_handler(telegram.ext.CommandHandler("start", start))
+disp.add_handler(telegram.ext.CommandHandler("help", help))
+disp.add_handler(telegram.ext.CommandHandler("price", price))
+disp.add_handler(telegram.ext.CommandHandler("contact", contact))
+disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMessage))
 
-    updater.start_polling()
-    updater.idle()
+updater.start_polling(listen="0.0.0.0",
+                       port=PORT,
+                       url_path="YOUR TOKEN HERE")
+updater.bot.setWebhook("YOUR WEB SERVER LINK HERE" + "YOUR TOKEN HERE")
+
+updater.idle()
 
 @app.route('/', methods=['POST', 'GET'])
 def home():
-    main()
+
     return 'Hello bot'
 
 @app.route('/sethook', methods=['POST', 'GET'])
@@ -239,4 +244,5 @@ def sethook():
     return 'success'
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    main()
+    app.run(debug=True, threaded=True)
