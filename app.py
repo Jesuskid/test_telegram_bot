@@ -228,7 +228,7 @@ disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMe
 
 updater.start_polling(listen="0.0.0.0",
                        port=PORT,
-                       url_path="YOUR TOKEN HERE")
+                       url_path=TOKEN)
 updater.bot.setWebhook("https://telegram-bot-2g8d.onrender.com/" + TOKEN)
 
 updater.idle()
