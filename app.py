@@ -239,8 +239,9 @@ def respond():
     msg_id = update.message.message_id
     text = update.message.text
     if (text == '/price'):
+        image = open('image.png', 'rb')
         message = price()
-        bot.sendMessage(text=message, chat_id=chat_id)
+        bot.sendPhoto(image, caption=message, chat_id=chat_id)
     else:
         bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
 
