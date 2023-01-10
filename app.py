@@ -231,6 +231,7 @@ def main():
 @app.route('/', methods=['POST'])
 def home():
     main()
+    return 'Hello bot'
 
 
 
