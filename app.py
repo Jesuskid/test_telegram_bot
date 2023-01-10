@@ -227,7 +227,7 @@ def index():
         bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
     return '.'
 
-@app.route('/setWebHook/<str:url>')
+@app.route('/setWebHook/<string:url>')
 def setHook(url):
     bot = telegram.Bot(token=TOKEN)
     bot.set_webhook("{URL}{TOKEN}".format(URL=url,TOKEN=TOKEN))
