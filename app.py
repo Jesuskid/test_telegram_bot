@@ -212,10 +212,11 @@ app = Flask(__name__)
 
 
 
+bot = telegram.Bot(token=TOKEN)
 
 @app.route('/', methods=["GET", 'POST'])
 def index():
-    bot = telegram.Bot(token=TOKEN)
+
     # updater = telegram.ext.Updater(token=TOKEN, use_context=True)
     if request.method == 'POST':
         update = telegram.Update.de_json(request.get_json(force=True), bot)
@@ -229,11 +230,28 @@ def index():
         bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
     return '.'
 
+@app.route('/{}'.format(TOKEN), methods=['POST'])
+def respond():
+    # retrieve the message in JSON and then transform it to Telegram object
+    update = telegram.Update.de_json(request.get_json(force=True), bot)
+
+    chat_id = update.message.chat.id
+    msg_id = update.message.message_id
+    text = update.message.text
+
+    bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
+
+    return 'ok'
+
 @app.route('/setWebHook/<string:url>')
 def setHook(url):
     bot = telegram.Bot(token=TOKEN)
-    bot.set_webhook("{URL}{TOKEN}".format(URL=URL,TOKEN=TOKEN))
-    return 'success'
+    Url = URL if URL else url
+    s = bot.setWebhook("{URL}{TOKEN}".format(URL=Url,TOKEN=TOKEN))
+    if s:
+        return "webhook setup ok"
+    else:
+        return "webhook setup failed"
 
 
 if __name__ == '__main__':
