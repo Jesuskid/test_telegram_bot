@@ -13,6 +13,8 @@ from flask import Flask, request
 import os
 PORT = int(os.environ.get('PORT', '5000'))
 
+URL = os.environ.get('URL')
+
 
 
 
@@ -230,7 +232,7 @@ def index():
 @app.route('/setWebHook/<string:url>')
 def setHook(url):
     bot = telegram.Bot(token=TOKEN)
-    bot.set_webhook("{URL}{TOKEN}".format(URL=url,TOKEN=TOKEN))
+    bot.set_webhook("{URL}{TOKEN}".format(URL=URL,TOKEN=TOKEN))
     return 'success'
 
 
