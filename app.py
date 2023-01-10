@@ -157,10 +157,15 @@ def help(update, context):
     """)
 
 def set_price_var():
-    (wei_price, ) = get()
+    (wei_price, total_ss) = get()
     price_var = int(wei_price) / 1000000000000000000
     db['price'] = price_var
     db['last_time'] = datetime.datetime.now()
+    db['total_supply'] = total_ss
+    backing_lp = get_lp()
+    db['lp'] = backing_lp
+
+set_price_var()
 
 def price():
     last_time = db['last_time'] + datetime.timedelta(minutes=3)
