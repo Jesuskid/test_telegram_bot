@@ -6,3 +6,4 @@ requests==2.24.0
 sqlitedict==2.1.0
 selenium==3.141.0
 telegram==0.0.1
+gunicorn==20.0.4
