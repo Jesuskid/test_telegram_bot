@@ -159,7 +159,7 @@ def set_price_var():
 
 def price(update, context):
     last_time = db['last_time'] + datetime.timedelta(minutes=3)
-    last_image_fetch = db['last_time'] + datetime.timedelta(minutes=0)
+    last_image_fetch = db['last_time'] + datetime.timedelta(minutes=30)
     price_var = 0
     total_supply_val = 0
     print(last_time)
@@ -192,7 +192,7 @@ def price(update, context):
     ]
 
     reply_markup = InlineKeyboardMarkup(keyboard)
-    message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 2)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
+    message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 4)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
                    f"MarketCap: ${round((price_var*total_supply_val), 0)}\n" \
                    f"LP holdings: {round(backing_lp)} BUSD (${round(backing_lp)})"
     update.message.reply_photo(image, caption=message_text, reply_markup=reply_markup)
@@ -228,12 +228,10 @@ def main():
     updater.start_polling()
     updater.idle()
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', 'GET'])
 def home():
     main()
     return 'Hello bot'
-
-
 
 @app.route('/sethook', methods=['POST', 'GET'])
 def sethook():
@@ -241,5 +239,4 @@ def sethook():
     return 'success'
 
 if __name__ == '__main__':
-    main()
     app.run(debug=True)
