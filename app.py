@@ -9,7 +9,7 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
 import os
 import requests
-from flask import Flask
+from flask import Flask, request
 
 
 
@@ -18,7 +18,7 @@ db = SqliteDict('./db.sqlite', autocommit=True)
 # take a snapshot of the chart
 # splinter: https://splinter.readthedocs.io/en/latest/install/driver_install.html
 
-
+app = Flask(__name__)
 TOKEN = "5848336987:AAGeAmMwEkS7i4Y_QbSTbSnNNF1rYfRnJWI"
 api_key = "yUPc8FIAEhUe4S9IfGYV0w3XgpxmizxvFDU0bC9zvcnQ0OAUNxMavTh0rhTvLcMH"
 ADDRESS = "0xEcdF61B4d2a4f84bAB59f9756ccF989C38bf99F5"
@@ -128,10 +128,13 @@ def fetch_image():
     options.add_argument('--disable-gpu')
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--no-sandbox')
-    driver = webdriver.Chrome(executable_path="chromedriver.exe")
+    driver = webdriver.Chrome(executable_path="chromedriver.exe", options=options)
     driver.get('https://2spice.link/chart')
-    element = driver.find_element_by_css_selector('canvas')
     time.sleep(5)
+    btn = driver.find_element_by_xpath('/html/body/div/div/div/div/div/div[1]/div/div[1]/button[1]')
+    btn.click()
+    time.sleep(5)
+    element = driver.find_element_by_css_selector('canvas')
     driver.get_screenshot_as_file('image.png')
     print('done')
 
@@ -156,7 +159,7 @@ def set_price_var():
 
 def price(update, context):
     last_time = db['last_time'] + datetime.timedelta(minutes=3)
-    last_image_fetch = db['last_time'] + datetime.timedelta(minutes=30)
+    last_image_fetch = db['last_time'] + datetime.timedelta(minutes=0)
     price_var = 0
     total_supply_val = 0
     print(last_time)
@@ -212,14 +215,30 @@ def handleMessage(update, context):
 
 
 
-
 updater = telegram.ext.Updater(token=TOKEN, use_context=True)
 disp = updater.dispatcher
 
-disp.add_handler(telegram.ext.CommandHandler("start", start))
-disp.add_handler(telegram.ext.CommandHandler("help", help))
-disp.add_handler(telegram.ext.CommandHandler("price", price))
-disp.add_handler(telegram.ext.CommandHandler("contact", contact))
-disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMessage))
-updater.start_polling()
-updater.idle()
+def main():
+    disp.add_handler(telegram.ext.CommandHandler("start", start))
+    disp.add_handler(telegram.ext.CommandHandler("help", help))
+    disp.add_handler(telegram.ext.CommandHandler("price", price))
+    disp.add_handler(telegram.ext.CommandHandler("contact", contact))
+    disp.add_handler(telegram.ext.MessageHandler(telegram.ext.Filters.text, handleMessage))
+
+    updater.start_polling()
+    updater.idle()
+
+@app.route('/', methods=['POST'])
+def home():
+    main()
+
+
+
+@app.route('/sethook', methods=['POST', 'GET'])
+def sethook():
+    updater.start_webhook(f'http://127.0.0.1:5000/{TOKEN}')
+    return 'success'
+
+if __name__ == '__main__':
+    main()
+    app.run(debug=True)
