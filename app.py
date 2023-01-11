@@ -186,8 +186,8 @@ def respond():
                    f"MarketCap: ${round((wei_price * total_ss), 0)}\n"\
                    f"LP holdings: {round((wei_price * total_ss))} BUSD (${round((wei_price * total_ss))})"
         bot.sendMessage(chat_id=chat_id, text=message)
-        image = open('image.png', 'r')
-        bot.sendPhoto(image, text=message)
+        image = open('image.png', 'rb')
+        bot.sendPhoto(chat_id=chat_id, photo=image)
         image.close()
     else:
         bot.sendMessage(chat_id=chat_id, text='message')
