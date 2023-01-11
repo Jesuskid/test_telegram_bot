@@ -3,7 +3,7 @@ from moralis import evm_api
 import datetime
 from sqlitedict import SqliteDict
 import telegram
-# from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
 from flask import Flask, request
 import os
@@ -182,12 +182,17 @@ def respond():
     if (text == '/price'):
         print('hello')
         (wei_price, total_ss) = get_price()
+        keyboard = [
+            [InlineKeyboardButton("Buy", url='https://2spice.link/swap', callback_data='https://2spice.link/swap')],
+            [InlineKeyboardButton("Chart", url='https://2spice.link/chart', callback_data='https://2spice.link/chart')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
         message = f"Token: 2Spice(Spice)\nPrice: ${round(wei_price, 3)}\nTotal Supply: {round(total_ss, 2)}\n " \
                    f"MarketCap: ${round((wei_price * total_ss), 0)}\n"\
                    f"LP holdings: {round((wei_price * total_ss))} BUSD (${round((wei_price * total_ss))})"
         bot.sendMessage(chat_id=chat_id, text=message)
         image = open('image.png', 'rb')
-        bot.sendPhoto(chat_id=chat_id, photo=image)
+        bot.sendPhoto(chat_id=chat_id, caption=message, photo=image, reply_markup=reply_markup)
         image.close()
     else:
         bot.sendMessage(chat_id=chat_id, text='message')
