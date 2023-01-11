@@ -181,7 +181,7 @@ def respond():
     text = update.message.text
     if (text == '/price'):
         print('hello')
-        image = open('image.png', 'rb')
+        # image = open('image.png', 'rb')
         # message = price()
         bot.sendMessage(chat_id=chat_id, text='Ya lass')
     else:
