@@ -30,10 +30,11 @@ WEI = 1000000000000000000
 
 def get_price():
     user_table = con['parse']['NewPrice']
-    tab = user_table.find().sort('_created_at', -1).limit(1)
+    tab = user_table.find().sort('block_timestamp', -1).limit(1)
     price = 0
     totalSupply = 0
     for x in tab:
+        print(x)
         price = int(x['currentPrice']) / WEI
         totalSupply = int(x['totalSupply']) / WEI
 
@@ -181,9 +182,13 @@ def respond():
     if (text == '/price'):
         print('hello')
         (wei_price, total_ss) = get_price()
-        message = f"Token: 2Spice(Spice)\nPrice: ${round(wei_price, 4)}\nTotal Supply: {round(total_ss, 2)}\n " \
-                   f"MarketCap: ${round((wei_price * total_ss), 0)}\n"
+        message = f"Token: 2Spice(Spice)\nPrice: ${round(wei_price, 3)}\nTotal Supply: {round(total_ss, 2)}\n " \
+                   f"MarketCap: ${round((wei_price * total_ss), 0)}\n"\
+                   f"LP holdings: {round((wei_price * total_ss))} BUSD (${round((wei_price * total_ss))})"
         bot.sendMessage(chat_id=chat_id, text=message)
+        image = open('image.png', 'r')
+        bot.sendPhoto(image, text=message)
+        image.close()
     else:
         bot.sendMessage(chat_id=chat_id, text='message')
     return 'ok'
