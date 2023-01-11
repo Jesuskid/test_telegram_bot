@@ -1,17 +1,12 @@
 import time
-import math
 import telegram.ext
 from moralis import evm_api
-from frozendict import frozendict
 import datetime
 from sqlitedict import SqliteDict
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
-import os
-import requests
 from flask import Flask, request
 import os
-import pprint
 import pymongo
 
 MONGO_HOST = os.environ.get('MONGO_HOST')
