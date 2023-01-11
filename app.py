@@ -1,8 +1,8 @@
 import time
-import telegram
 from moralis import evm_api
 import datetime
 from sqlitedict import SqliteDict
+import telegram.bot
 # from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
 from flask import Flask, request
@@ -25,6 +25,7 @@ ADDRESS = "0xEcdF61B4d2a4f84bAB59f9756ccF989C38bf99F5"
 
 LAST_SCRAPE = datetime.datetime.now()
 WEI = 1000000000000000000
+
 
 
 def get_price():
@@ -151,7 +152,7 @@ app = Flask(__name__)
 # from teleflask.messages import Message
 
 
-bot = telegram.Bot(token=TOKEN)
+bot = telegram.bot.Bot(token=TOKEN)
 
 
 @app.route('/', methods=["GET", 'POST'])
