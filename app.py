@@ -3,7 +3,6 @@ from moralis import evm_api
 import datetime
 from sqlitedict import SqliteDict
 import telegram
-from telegram import bot as BotFather
 # from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
 from flask import Flask, request
@@ -153,7 +152,7 @@ app = Flask(__name__)
 # from teleflask.messages import Message
 
 
-bot = BotFather.Bot(token=TOKEN)
+bot = telegram.Bot(token=TOKEN)
 
 
 @app.route('/', methods=["GET", 'POST'])
