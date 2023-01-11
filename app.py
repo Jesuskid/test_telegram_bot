@@ -182,10 +182,10 @@ def respond():
     if (text == '/price'):
         print('hello')
         image = open('image.png', 'rb')
-        message = price()
-        bot.sendMessage(chat_id=chat_id, text=message)
+        # message = price()
+        bot.sendMessage(chat_id=chat_id, text='Ya lass')
     else:
-        bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
+        bot.sendMessage(chat_id=chat_id, text='message')
     return 'ok'
 
 
