@@ -1,5 +1,5 @@
 import time
-import telegram.ext
+import telegram
 from moralis import evm_api
 import datetime
 from sqlitedict import SqliteDict
