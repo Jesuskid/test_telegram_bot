@@ -111,13 +111,12 @@ def price():
     price_var = 0
     total_supply_val = 0
     print(last_time)
-    print(datetime.datetime.now())
-    if last_image_fetch < datetime.datetime.now():
-        try:
-            fetch_image()
-        except:
-            print(Exception)
-    image = open('image.png', 'rb')
+    # print(datetime.datetime.now())
+    # if last_image_fetch < datetime.datetime.now():
+    #     try:
+    #         fetch_image()
+    #     except:
+    #         print(Exception)
     if last_time < datetime.datetime.now():
         print('refetched')
         (wei_price, total_supply) = get_price()
@@ -181,9 +180,8 @@ def respond():
     text = update.message.text
     if (text == '/price'):
         print('hello')
-        # image = open('image.png', 'rb')
-        # message = price()
-        bot.sendMessage(chat_id=chat_id, text='Ya lass')
+        message = price()
+        bot.sendMessage(chat_id=chat_id, text=message)
     else:
         bot.sendMessage(chat_id=chat_id, text='message')
     return 'ok'
