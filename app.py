@@ -180,7 +180,9 @@ def respond():
     text = update.message.text
     if (text == '/price'):
         print('hello')
-        message = price()
+        (wei_price, total_ss) = get_price()
+        message = f"Token: 2Spice(Spice)\nPrice: ${round(wei_price, 4)}\nTotal Supply: {round(total_ss, 2)}\n " \
+                   f"MarketCap: ${round((wei_price * total_ss), 0)}\n"
         bot.sendMessage(chat_id=chat_id, text=message)
     else:
         bot.sendMessage(chat_id=chat_id, text='message')
