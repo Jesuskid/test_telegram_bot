@@ -3,7 +3,7 @@ import telegram
 from moralis import evm_api
 import datetime
 from sqlitedict import SqliteDict
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
+# from telegram import InlineKeyboardButton, InlineKeyboardMarkup, InputMediaPhoto
 from selenium import webdriver
 from flask import Flask, request
 import os
@@ -134,12 +134,12 @@ def price():
         total_supply_val = db['total_supply']
         backing_lp = db['lp']
 
-    keyboard = [
-        [InlineKeyboardButton("Buy",  url='https://2spice.link/swap', callback_data='https://2spice.link/swap')],
-        [InlineKeyboardButton("Chart", url='https://2spice.link/chart', callback_data='https://2spice.link/chart')]
-    ]
-
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    # keyboard = [
+    #     [InlineKeyboardButton("Buy",  url='https://2spice.link/swap', callback_data='https://2spice.link/swap')],
+    #     [InlineKeyboardButton("Chart", url='https://2spice.link/chart', callback_data='https://2spice.link/chart')]
+    # ]
+    #
+    # reply_markup = InlineKeyboardMarkup(keyboard)
     message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 4)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
                    f"MarketCap: ${round((price_var*total_supply_val), 0)}\n" \
                    f"LP holdings: {round(backing_lp)} BUSD (${round(backing_lp)})"
