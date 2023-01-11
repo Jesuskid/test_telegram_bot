@@ -1,9 +1,8 @@
-python_telegram_bot==13.15
-moralis==0.1.14
 Flask==2.2.2
-frozendict==2.3.4
-requests==2.24.0
-sqlitedict==2.1.0
-selenium==3.141.0
 telegram==0.0.1
-gunicorn==20.0.4
+requests==2.24.0
+selenium==3.141.0
+pymongo==4.3.3
+moralis==0.1.14
+frozendict==2.3.4
+sqlitedict==2.1.0

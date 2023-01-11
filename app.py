@@ -11,100 +11,41 @@ import os
 import requests
 from flask import Flask, request
 import os
+import pprint
+import pymongo
+
+MONGO_HOST = os.environ.get('MONGO_HOST')
+MONGO_PORT = int(os.environ.get('MONGO_PORT'))
+con = pymongo.MongoClient(MONGO_HOST, MONGO_PORT)
 PORT = int(os.environ.get('PORT', '5000'))
 
 URL = os.environ.get('URL')
 
 
-
-
-
 db = SqliteDict('./db.sqlite', autocommit=True)
 
-# take a snapshot of the chart
-# splinter: https://splinter.readthedocs.io/en/latest/install/driver_install.html
 
-TOKEN = "5848336987:AAGeAmMwEkS7i4Y_QbSTbSnNNF1rYfRnJWI"
-api_key = "yUPc8FIAEhUe4S9IfGYV0w3XgpxmizxvFDU0bC9zvcnQ0OAUNxMavTh0rhTvLcMH"
+TOKEN = os.environ.get("TOKEN")
+api_key = os.environ.get('MORALIS_API')
 ADDRESS = "0xEcdF61B4d2a4f84bAB59f9756ccF989C38bf99F5"
 
 LAST_SCRAPE = datetime.datetime.now()
+WEI = 1000000000000000000
 
-def get():
-    print()
-    params = {
-        "address": ADDRESS,
-        "function_name": "calculatePrice",
-        "chain": "bsc",
-    }
+def get_price():
+    user_table = con['parse']['NewPrice']
+    tab = user_table.find().sort('_created_at', -1).limit(1)
+    price = 0
+    totalSupply = 0
+    for x in tab:
+        price = int(x['currentPrice']) / WEI
+        totalSupply = int(x['totalSupply']) / WEI
 
-    params2 = {
-        "address": ADDRESS,
-        "function_name": "totalSupply",
-        "chain": "bsc",
-    }
-    abi = {
-            "inputs": [],
-            "name": "calculatePrice",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
+    return (price, totalSupply)
 
-    abi = {
-        "inputs": [],
-        "name": "calculatePrice",
-        "outputs": [
-            {
-                "internalType": "uint256",
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    }
-    abi2 = {
-            "inputs": [],
-            "name": "totalSupply",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
-    body = {
-        "abi": [frozendict(abi)],
-        "params": {},
-    }
 
-    body2 = {
-        "abi": [frozendict(abi2)],
-        "params": {},
-    }
 
-    price = evm_api.utils.run_contract_function(
-        api_key=api_key,
-        params=params,
-        body=body,
-    )
-    total_supply = evm_api.utils.run_contract_function(
-        api_key=api_key,
-        params=params2,
-        body=body2,
-    )
 
-    return (price, total_supply)
 
 def get_lp():
     balance_params = {
@@ -157,13 +98,15 @@ def help(update, context):
     """)
 
 def set_price_var():
-    (wei_price, total_ss) = get()
-    price_var = int(wei_price) / 1000000000000000000
+
+    (wei_price, total_ss) = get_price()
+    price_var = wei_price
     db['price'] = price_var
     db['last_time'] = datetime.datetime.now()
     db['total_supply'] = total_ss
     backing_lp = get_lp()
     db['lp'] = backing_lp
+
 
 set_price_var()
 
@@ -182,7 +125,7 @@ def price():
     image = open('image.png', 'rb')
     if last_time < datetime.datetime.now():
         print('refetched')
-        (wei_price, total_supply) = get()
+        (wei_price, total_supply) = get_price()
         price_var = int(wei_price) / 1000000000000000000
         total_supply_val = int(total_supply) / 1000000000000000000
         backing_lp = get_lp()
