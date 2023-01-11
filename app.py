@@ -156,23 +156,23 @@ bot = telegram.Bot(token=TOKEN)
 
 
 @app.route('/', methods=["GET", 'POST'])
-def index():
+async def index():
     # updater = telegram.ext.Updater(token=TOKEN, use_context=True)
     if request.method == 'POST':
         update = telegram.Update.de_json(request.get_json(force=True), bot)
         chat_id = update.effective_chat.id
         text = update.message.text
         if (text == 'price'):
-            bot.sendMessage(text=f'You said {text}', chat_id=chat_id)
+            await bot.sendMessage(text=f'You said {text}', chat_id=chat_id)
         elif (text == 'contact'):
             pass
     else:
-        bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
+        await bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
     return '.'
 
 
 @app.route('/{}'.format(TOKEN), methods=['POST'])
-def respond():
+async def respond():
     # retrieve the message in JSON and then transform it to Telegram object
     update = telegram.Update.de_json(request.get_json(force=True), bot)
 
@@ -182,9 +182,9 @@ def respond():
     if (text == '/price'):
         image = open('image.png', 'rb')
         message = price()
-        bot.sendPhoto(image, caption=message, chat_id=chat_id)
+        await bot.sendPhoto(image, caption=message, chat_id=chat_id)
     else:
-        bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
+        await bot.sendMessage(chat_id=chat_id, text=text, reply_to_message_id=msg_id)
 
     return 'ok'
 
