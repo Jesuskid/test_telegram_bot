@@ -173,12 +173,14 @@ def index():
 
 @app.route('/{}'.format(TOKEN), methods=['POST'])
 def respond():
+    print('received command')
     # retrieve the message in JSON and then transform it to Telegram object
     update = telegram.Update.de_json(request.get_json(force=True), bot)
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text
     if (text == '/price'):
+        print('hello')
         image = open('image.png', 'rb')
         message = price()
         bot.sendMessage(chat_id=chat_id, text=message)
@@ -193,7 +195,7 @@ def setHook(url):
     Url = URL if URL else url
     hook = "{URL}{TOKEN}".format(URL=Url, TOKEN=TOKEN)
     print('HOOK URL -----' + " " + hook)
-    s = bot.setWebhook(hook)
+    s = bot.setWebhook()
     if s:
         return "webhook setup ok"
     else:
