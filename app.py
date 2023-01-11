@@ -9,16 +9,15 @@ from flask import Flask, request
 import os
 import pymongo
 
-MONGO_HOST = os.environ.get('MONGO_HOST')
-MONGO_PORT = int(os.environ.get('MONGO_PORT'))
+MONGO_HOST = "167.99.183.64"
+MONGO_PORT = 56728
 con = pymongo.MongoClient(MONGO_HOST, MONGO_PORT)
+
 PORT = int(os.environ.get('PORT', '5000'))
 
 URL = os.environ.get('URL')
 
-
 db = SqliteDict('./db.sqlite', autocommit=True)
-
 
 TOKEN = os.environ.get("TOKEN")
 api_key = os.environ.get('MORALIS_API')
@@ -26,6 +25,7 @@ ADDRESS = "0xEcdF61B4d2a4f84bAB59f9756ccF989C38bf99F5"
 
 LAST_SCRAPE = datetime.datetime.now()
 WEI = 1000000000000000000
+
 
 def get_price():
     user_table = con['parse']['NewPrice']
@@ -39,9 +39,6 @@ def get_price():
     return (price, totalSupply)
 
 
-
-
-
 def get_lp():
     balance_params = {
         "address": ADDRESS,
@@ -52,7 +49,7 @@ def get_lp():
     return int(value[0]['balance']) / 1000000000000000000
 
 
-#https://www.youtube.com/watch?v=LN1a0JoKlX8&ab_channel=RajsuthanOfficial
+# https://www.youtube.com/watch?v=LN1a0JoKlX8&ab_channel=RajsuthanOfficial
 def fetch_image():
     user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36 Edg/108.0.1462.54"
 
@@ -83,6 +80,7 @@ def fetch_image():
 def start(update, context):
     update.message.reply_text("Hello welcome to 2spice telegram bot")
 
+
 def help(update, context):
     update.message.reply_text("""
     The following commands are available
@@ -92,8 +90,8 @@ def help(update, context):
     /contact -
     """)
 
-def set_price_var():
 
+def set_price_var():
     (wei_price, total_ss) = get_price()
     price_var = wei_price
     db['price'] = price_var
@@ -104,6 +102,7 @@ def set_price_var():
 
 
 set_price_var()
+
 
 def price():
     last_time = db['last_time'] + datetime.timedelta(minutes=3)
@@ -140,11 +139,11 @@ def price():
     # ]
     #
     # reply_markup = InlineKeyboardMarkup(keyboard)
-    message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 4)}\nTotal Supply: {round(total_supply_val, 2)}\n "\
-                   f"MarketCap: ${round((price_var*total_supply_val), 0)}\n" \
+    message_text = f"Token: 2Spice(Spice)\nPrice: ${round(price_var, 4)}\nTotal Supply: {round(total_supply_val, 2)}\n " \
+                   f"MarketCap: ${round((price_var * total_supply_val), 0)}\n" \
                    f"LP holdings: {round(backing_lp)} BUSD (${round(backing_lp)})"
 
-    return  message_text
+    return message_text
 
 
 app = Flask(__name__)
@@ -152,26 +151,24 @@ app = Flask(__name__)
 # from teleflask.messages import Message
 
 
-
-
-
 bot = telegram.Bot(token=TOKEN)
+
 
 @app.route('/', methods=["GET", 'POST'])
 def index():
-
     # updater = telegram.ext.Updater(token=TOKEN, use_context=True)
     if request.method == 'POST':
         update = telegram.Update.de_json(request.get_json(force=True), bot)
         chat_id = update.effective_chat.id
         text = update.message.text
-        if(text == 'price'):
+        if (text == 'price'):
             bot.sendMessage(text=f'You said {text}', chat_id=chat_id)
-        elif(text == 'contact'):
+        elif (text == 'contact'):
             pass
     else:
         bot.sendMessage(text='Hi Logoa', chat_id=-769764926)
     return '.'
+
 
 @app.route('/{}'.format(TOKEN), methods=['POST'])
 def respond():
@@ -190,12 +187,13 @@ def respond():
 
     return 'ok'
 
+
 @app.route('/setWebHook/<string:url>')
 def setHook(url):
     bot = telegram.Bot(token=TOKEN)
     Url = URL if URL else url
-    hook = "{URL}{TOKEN}".format(URL=Url,TOKEN=TOKEN)
-    print('HOOK URL -----'+" "+hook)
+    hook = "{URL}{TOKEN}".format(URL=Url, TOKEN=TOKEN)
+    print('HOOK URL -----' + " " + hook)
     s = bot.setWebhook(hook)
     if s:
         return "webhook setup ok"
@@ -204,4 +202,4 @@ def setHook(url):
 
 
 if __name__ == '__main__':
-   app.run(threaded=True)
+    app.run(threaded=True)
