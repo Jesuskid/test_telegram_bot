@@ -179,7 +179,8 @@ def respond():
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text
-    print(text)
+    cmd = text.split(" ")[0]
+    print(cmd)
     if (text.strip() == '/price'):
         (wei_price, total_ss) = get_price()
         keyboard = [
