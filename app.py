@@ -180,7 +180,7 @@ def respond():
     msg_id = update.message.message_id
     text = update.message.text
     if (text.strip() == '/price'):
-        print('hello')
+        print(text)
         (wei_price, total_ss) = get_price()
         keyboard = [
             [InlineKeyboardButton("Buy", url='https://2spice.link/swap', callback_data='https://2spice.link/swap')],
