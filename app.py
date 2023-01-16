@@ -179,8 +179,8 @@ def respond():
     chat_id = update.message.chat.id
     msg_id = update.message.message_id
     text = update.message.text
+    print(text)
     if (text.strip() == '/price'):
-        print(text)
         (wei_price, total_ss) = get_price()
         keyboard = [
             [InlineKeyboardButton("Buy", url='https://2spice.link/swap', callback_data='https://2spice.link/swap')],
